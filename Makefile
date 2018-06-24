@@ -10,3 +10,6 @@ clean:
 dev:
 	go build
 	./mytime -e development
+
+doc:
+	aglio -i ./docs/spec.apib -o ./docs/index.html

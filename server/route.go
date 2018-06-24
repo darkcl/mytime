@@ -18,6 +18,7 @@ func NewRouter() *gin.Engine {
 		{
 			user := new(controllers.UserController)
 			userGroup.POST("", user.SignUp)
+			userGroup.POST("/token", user.GetToken)
 		}
 	}
 

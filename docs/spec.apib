@@ -16,9 +16,13 @@ FORMAT: 1A
 
         + email (string, required)
 
-+ Response 201
++ Response 201 (application/json; charset=utf-8)
 
-### Login [POST /login]
+    + Attributes (object)
+
+            + token (string, required)
+
+### Token [POST /user/token]
 
 + Request 
 
