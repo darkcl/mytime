@@ -1,6 +1,11 @@
 # MyTime API
 
-Learning Golang Day #1
+Learning Golang
+
+- [ ] Project Structure
+- [ ] Auth
+- [ ] Database
+- [ ] Timesheet
 
 ## Usage
 
