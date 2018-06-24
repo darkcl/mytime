@@ -1,0 +1,75 @@
+FORMAT: 1A
+
+# My Time API
+
+## Group User
+
+### Register [POST /user]
+
++ Request 
+
+    + Attributes (object)
+
+        + userName (string, required)
+
+        + password (string, required)
+
+        + email (string, required)
+
++ Response 201
+
+### Login [POST /login]
+
++ Request 
+
+    + Attributes (object)
+
+        + userName (string, required)
+
+        + password (string, required)
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Attributes (object)
+
+            + token (string, required)
+
+## Group Timesheet
+
+### Download Timesheet [GET /me/timesheet]
+
++ Request
+    
+    + Headers
+
+            Authorization: Bearer {{token}}
+
++ Response 200 (application/xlxs)
+
+    + Body
+
+            xlxs File
+
+### Add Leave Day [POST /me/leave]
+
++ Request 
+
+    + Headers
+
+            Authorization: Bearer {{token}}
+
+    + Attributes (object)
+
+        + date: `2018-01-01` (string, required)
+
++ Response 201
+
+## Group Health Check 
+
+### Ping [GET /ping]
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {"message": "OK"}
