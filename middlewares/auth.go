@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/darkcl/mytime/config"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +13,8 @@ import (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authorizationHeader := c.Request.Header.Get("authorization")
-
+		config := config.GetConfig()
+		secret := config.GetString("server.secret")
 		if authorizationHeader != "" {
 			bearerToken := strings.Split(authorizationHeader, " ")
 			if len(bearerToken) == 2 {
@@ -20,7 +22,7 @@ func AuthMiddleware() gin.HandlerFunc {
 					if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 						return nil, fmt.Errorf("There was an error")
 					}
-					return []byte("secret"), nil
+					return []byte(secret), nil
 				})
 				if error != nil {
 					c.AbortWithStatusJSON(http.StatusUnauthorized, error)
