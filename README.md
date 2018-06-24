@@ -2,9 +2,9 @@
 
 Learning Golang
 
-- [ ] Project Structure
-- [ ] Auth
-- [ ] Database
+- [x] Project Structure
+- [x] Auth
+- [x] Database
 - [ ] Timesheet
 
 ## Usage
