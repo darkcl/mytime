@@ -4,6 +4,7 @@ main.go1
 *.sqlite
 
 vendor/
+tmp/
 
 # Created by https://www.gitignore.io/api/go
 

@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/darkcl/mytime/controllers"
+	"github.com/darkcl/mytime/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +20,13 @@ func NewRouter() *gin.Engine {
 			user := new(controllers.UserController)
 			userGroup.POST("", user.SignUp)
 			userGroup.POST("/token", user.GetToken)
+		}
+
+		meGroup := v1.Group("me")
+		{
+			leaveCtrl := new(controllers.LeaveController)
+			meGroup.Use(middlewares.AuthMiddleware())
+			meGroup.POST("/leave", leaveCtrl.CreateLeave)
 		}
 	}
 

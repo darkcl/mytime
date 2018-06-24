@@ -23,7 +23,7 @@ func (u UserController) createJWT(user models.User) (*models.JwtToken, error) {
 	secret := config.GetString("server.secret")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id": user.ID,
+		"id": string(user.ID),
 	})
 	tokenString, error := token.SignedString([]byte(secret))
 
@@ -82,7 +82,6 @@ func (u UserController) SignUp(c *gin.Context) {
 	jwtToken, code, err := u.createUser(signUp)
 
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(code, gin.H{"error": err.Error()})
 		c.Abort()
 		return

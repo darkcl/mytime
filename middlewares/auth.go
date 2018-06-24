@@ -28,8 +28,8 @@ func AuthMiddleware() gin.HandlerFunc {
 					c.AbortWithStatusJSON(http.StatusUnauthorized, error)
 					return
 				}
-				if token.Valid {
-					c.Set("decoded", token.Claims)
+				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+					c.Set("userID", claims["id"])
 					c.Next()
 				} else {
 					res := []string{"message", "Invalid Token"}

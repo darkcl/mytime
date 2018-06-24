@@ -20,7 +20,7 @@ func Init() {
 		panic("Failed to connect database")
 	}
 	conn.AutoMigrate(&models.User{})
-
+	conn.AutoMigrate(&models.Leave{})
 	fmt.Println("Connected To Database")
 }
 
