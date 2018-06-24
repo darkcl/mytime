@@ -1,6 +1,7 @@
 
 mytime
 main.go1
+*.sqlite
 
 vendor/
 

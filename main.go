@@ -11,6 +11,8 @@ import (
 )
 
 func main() {
+	db.Init()
+
 	environment := flag.String("e", "development", "")
 	flag.Usage = func() {
 		fmt.Println("Usage: server -e {mode}")
@@ -18,6 +20,8 @@ func main() {
 	}
 	flag.Parse()
 	config.Init(*environment)
-	db.Init()
+
 	server.Init()
+
+	defer db.CloseDB()
 }
