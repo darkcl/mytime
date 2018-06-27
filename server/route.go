@@ -27,6 +27,7 @@ func NewRouter() *gin.Engine {
 			leaveCtrl := new(controllers.LeaveController)
 			meGroup.Use(middlewares.AuthMiddleware())
 			meGroup.POST("/leave", leaveCtrl.CreateLeave)
+			meGroup.DELETE("/leave/:leaveId", leaveCtrl.DeleteLeave)
 		}
 	}
 

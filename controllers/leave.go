@@ -44,7 +44,18 @@ func (u LeaveController) createLeave(leavePayload forms.LeaveForm, userID uint64
 	return nil, http.StatusForbidden, errors.New("User already exist")
 }
 
-// CreateLeave - Create a user
+func (u LeaveController) deleteLeave(leaveID string) (int, error) {
+	var conn = db.GetDB()
+	var leave models.Leave
+	if conn.Where("ID = ?", leaveID).First(&leave).RecordNotFound() {
+		return http.StatusForbidden, errors.New("Leave day not found")
+	}
+
+	conn.Delete(leave)
+	return http.StatusNoContent, nil
+}
+
+// CreateLeave - Add a day off
 func (u LeaveController) CreateLeave(c *gin.Context) {
 	var leaveForm forms.LeaveForm
 	userID, _ := c.Get("userID")
@@ -63,5 +74,18 @@ func (u LeaveController) CreateLeave(c *gin.Context) {
 	}
 	leaveResponse := models.LeaveResponse{LeaveID: fmt.Sprint(leave.ID), LeaveDate: leave.LeaveDate, Reason: leave.Reason}
 	c.JSON(code, leaveResponse)
+	return
+}
+
+// DeleteLeave - Reave a day off
+func (u LeaveController) DeleteLeave(c *gin.Context) {
+	leaveID := c.Param("leaveId")
+	code, err := u.deleteLeave(leaveID)
+	if err != nil {
+		c.JSON(code, gin.H{"error": err.Error()})
+		c.Abort()
+		return
+	}
+	c.Status(code)
 	return
 }
