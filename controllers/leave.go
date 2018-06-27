@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -24,7 +25,7 @@ func (u LeaveController) createLeave(leavePayload forms.LeaveForm, userID uint64
 	}
 
 	var user models.User
-	if conn.Debug().Where("ID = ?", userID).First(&user).RecordNotFound() {
+	if conn.Where("ID = ?", userID).First(&user).RecordNotFound() {
 		return nil, http.StatusForbidden, errors.New("User not found")
 	}
 
@@ -49,12 +50,12 @@ func (u LeaveController) CreateLeave(c *gin.Context) {
 		return
 	}
 	leave, code, err := u.createLeave(leaveForm, uint64(userID.(float64)))
-
+	leaveResponse := models.LeaveResponse{LeaveID: fmt.Sprint(leave.ID), LeaveDate: leave.LeaveDate, Reason: leave.Reason}
 	if err != nil {
 		c.JSON(code, gin.H{"error": err.Error()})
 		c.Abort()
 		return
 	}
-	c.JSON(code, leave)
+	c.JSON(code, leaveResponse)
 	return
 }
