@@ -20,7 +20,7 @@ FORMAT: 1A
 
     + Attributes (object)
 
-            + token (string, required)
+        + token (string, required)
 
 ### Token [POST /user/token]
 
@@ -47,6 +47,12 @@ FORMAT: 1A
     + Headers
 
             Authorization: Bearer {{token}}
+
+    + Attributes (object)
+
+        + date: `2018/03` (string, optional)
+
+            Get this month timesheet yyyy/MM 
 
 + Response 200 (application/xlxs)
 
