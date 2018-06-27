@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/darkcl/mytime/db"
@@ -15,7 +16,7 @@ import (
 // LeaveController - Leave Logic
 type LeaveController struct{}
 
-func (u LeaveController) createLeave(leavePayload forms.LeaveForm, userID uint64) (*models.Leave, int, error) {
+func (u LeaveController) createLeave(leavePayload forms.LeaveForm, userID string) (*models.Leave, int, error) {
 	var conn = db.GetDB()
 	layout := "01/02/2006"
 	leaveDate, dateError := time.Parse(layout, leavePayload.Date)
@@ -25,7 +26,10 @@ func (u LeaveController) createLeave(leavePayload forms.LeaveForm, userID uint64
 	}
 
 	var user models.User
-	if conn.Where("ID = ?", userID).First(&user).RecordNotFound() {
+	fmt.Println(userID)
+	ID, _ := strconv.ParseUint(userID, 10, 64)
+
+	if conn.Debug().Where("ID = ?", ID).First(&user).RecordNotFound() {
 		return nil, http.StatusForbidden, errors.New("User not found")
 	}
 
@@ -34,7 +38,7 @@ func (u LeaveController) createLeave(leavePayload forms.LeaveForm, userID uint64
 		return nil, http.StatusForbidden, fmt.Errorf("Already leave on this day, Leave ID = %d", leave.ID)
 	}
 
-	result := models.Leave{UserRefer: userID, LeaveDate: leaveDate, Reason: leavePayload.Reason}
+	result := models.Leave{UserRefer: ID, LeaveDate: leaveDate, Reason: leavePayload.Reason}
 
 	if conn.NewRecord(result) {
 		conn.Create(&result)
@@ -58,14 +62,15 @@ func (u LeaveController) deleteLeave(leaveID string) (int, error) {
 // CreateLeave - Add a day off
 func (u LeaveController) CreateLeave(c *gin.Context) {
 	var leaveForm forms.LeaveForm
-	userID, _ := c.Get("userID")
+	ID, _ := c.Get("userID")
+	userID, _ := ID.(string)
 
 	jsonError := c.BindJSON(&leaveForm)
 	if jsonError != nil {
 		c.JSON(http.StatusBadRequest, jsonError)
 		return
 	}
-	leave, code, err := u.createLeave(leaveForm, uint64(userID.(float64)))
+	leave, code, err := u.createLeave(leaveForm, userID)
 
 	if err != nil {
 		c.JSON(code, gin.H{"error": err.Error()})
@@ -74,6 +79,12 @@ func (u LeaveController) CreateLeave(c *gin.Context) {
 	}
 	leaveResponse := models.LeaveResponse{LeaveID: fmt.Sprint(leave.ID), LeaveDate: leave.LeaveDate, Reason: leave.Reason}
 	c.JSON(code, leaveResponse)
+	return
+}
+
+// ListLeave - List All Leaves
+func (u LeaveController) ListLeave(c *gin.Context) {
+	c.Status(http.StatusNotImplemented)
 	return
 }
 

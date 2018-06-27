@@ -29,7 +29,8 @@ func AuthMiddleware() gin.HandlerFunc {
 					return
 				}
 				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-					c.Set("userID", claims["id"])
+					fmt.Println(claims)
+					c.Set("userID", fmt.Sprint(claims["id"]))
 					c.Next()
 				} else {
 					res := []string{"message", "Invalid Token"}

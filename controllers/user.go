@@ -23,7 +23,7 @@ func (u UserController) createJWT(user models.User) (*models.JwtToken, error) {
 	secret := config.GetString("server.secret")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id": string(user.ID),
+		"id": fmt.Sprint(user.ID),
 	})
 	tokenString, error := token.SignedString([]byte(secret))
 
