@@ -13,3 +13,4 @@ dev:
 
 doc:
 	aglio -i ./docs/spec.apib -o ./docs/index.html
+	open ./docs/index.html

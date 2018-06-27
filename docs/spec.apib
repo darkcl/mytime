@@ -60,7 +60,35 @@ FORMAT: 1A
 
             xlxs File
 
-### Add Leave Day [POST /me/leave]
+## Leave Day [/me/leave]
+
+### Get Leave Day [GET /me/leave{?date}]
+
++ Parameters
+
+    + date: `2018-03`
+
+        Get specific month leave days, default is this month
+
++ Request 
+
+    + Headers
+
+            Authorization: Bearer {{token}}
+
++ Response 201 (application/json; charset=utf-8)
+
+    + Attributes (object)
+
+        + contents (array[object], required)
+
+            + id: `1` (string, required)
+
+            + date: `09/13/2018` (string, required)
+
+            + reason (string, required)
+
+### Add Leave Day [POST]
 
 + Request 
 
@@ -77,10 +105,34 @@ FORMAT: 1A
 + Response 201 (application/json; charset=utf-8)
 
     + Attributes (object)
+    
+        + id: `1` (string, required)
 
         + date: `09/13/2018` (string, required)
 
         + reason (string, required)
+
+### Delete Leave Day [DELETE /me/leave/{leaveId}]
+
++ Parameters
+
+    + leaveId: `1`
+
+        Leave ID
+
++ Request 
+
+    + Headers
+
+            Authorization: Bearer {{token}}
+
+    + Attributes (object)
+
+        + date: `09/13/2018` (string, required)
+
+        + reason (string, required)
+
++ Response 201 (application/json; charset=utf-8)
 
 ## Group Health Check 
 

@@ -29,11 +29,16 @@ func (u LeaveController) createLeave(leavePayload forms.LeaveForm, userID uint64
 		return nil, http.StatusForbidden, errors.New("User not found")
 	}
 
-	leave := models.Leave{UserRefer: userID, LeaveDate: leaveDate, Reason: leavePayload.Reason}
+	leave := models.Leave{LeaveDate: leaveDate}
+	if conn.First(&leave).RecordNotFound() == false {
+		return nil, http.StatusForbidden, fmt.Errorf("Already leave on this day, Leave ID = %d", leave.ID)
+	}
 
-	if conn.NewRecord(leave) {
-		conn.Create(&leave)
-		return &leave, http.StatusCreated, nil
+	result := models.Leave{UserRefer: userID, LeaveDate: leaveDate, Reason: leavePayload.Reason}
+
+	if conn.NewRecord(result) {
+		conn.Create(&result)
+		return &result, http.StatusCreated, nil
 	}
 
 	return nil, http.StatusForbidden, errors.New("User already exist")
@@ -50,12 +55,13 @@ func (u LeaveController) CreateLeave(c *gin.Context) {
 		return
 	}
 	leave, code, err := u.createLeave(leaveForm, uint64(userID.(float64)))
-	leaveResponse := models.LeaveResponse{LeaveID: fmt.Sprint(leave.ID), LeaveDate: leave.LeaveDate, Reason: leave.Reason}
+
 	if err != nil {
 		c.JSON(code, gin.H{"error": err.Error()})
 		c.Abort()
 		return
 	}
+	leaveResponse := models.LeaveResponse{LeaveID: fmt.Sprint(leave.ID), LeaveDate: leave.LeaveDate, Reason: leave.Reason}
 	c.JSON(code, leaveResponse)
 	return
 }
